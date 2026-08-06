@@ -6,29 +6,25 @@ import { useStore } from "@/context/StoreContext";
 import { Product } from "@/lib/types";
 import { Navbar } from "@/components/Navbar";
 import { CategoryShortcuts } from "@/components/CategoryShortcuts";
-import { AdminPinModal } from "@/components/AdminPinModal";
 import { CakeDrawer } from "@/components/CakeDrawer";
-import { CartDrawer } from "@/components/CartDrawer";
 import {
   ArrowLeft,
   Cake,
-  Sparkles,
   SlidersHorizontal,
   Check,
-  Star,
-  ArrowRight,
   Heart,
 } from "lucide-react";
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = use(params);
-  const decodedCategory = decodeURIComponent(resolvedParams.slug);
+  const rawSlug = resolvedParams.slug || "";
+  const decodedCategory = decodeURIComponent(rawSlug);
+  const normalizedSlug = decodedCategory.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
 
-  const { products, categories, settings, isLoaded } = useStore();
-
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isAdminPinModalOpen, setIsAdminPinModalOpen] = useState(false);
+  const { products, settings } = useStore();
   const [wishlist, setWishlist] = useState<string[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Filter & Sort States
   const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high">("featured");
@@ -43,11 +39,17 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     );
   };
 
-  const categoryProducts = products.filter(
-    (p) =>
-      p.category.toLowerCase().replace(/[^a-z0-9]+/g, "-") === resolvedParams.slug ||
-      p.category.toLowerCase() === decodedCategory.toLowerCase()
-  );
+  const categoryProducts = products.filter((p) => {
+    if (!p.category) return false;
+    const pCatSlug = p.category.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+    const pCatName = p.category.toLowerCase().trim();
+    return (
+      pCatSlug === normalizedSlug ||
+      pCatName === decodedCategory.toLowerCase().trim() ||
+      pCatSlug.includes(normalizedSlug) ||
+      normalizedSlug.includes(pCatSlug)
+    );
+  });
 
   let displayedProducts = categoryProducts.filter((p) => {
     if (egglessOnly && !p.isEggless) return false;
@@ -67,16 +69,13 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#212121] flex flex-col font-body">
-      <Navbar
-        onOpenAdminPinModal={() => setIsAdminPinModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      <Navbar />
 
       <CategoryShortcuts />
 
       {/* Header Banner */}
-      <section className="py-6 px-4 sm:px-6 max-w-7xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-4">
+      <section className="py-5 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+        <div className="flex items-center justify-between mb-3">
           <Link
             href="/"
             className="text-xs font-semibold text-gray-600 hover:text-[#C2185B] inline-flex items-center gap-1.5 transition-colors"
@@ -90,8 +89,8 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           </span>
         </div>
 
-        <div className="text-center max-w-2xl mx-auto mb-4">
-          <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-gray-900 capitalize">
+        <div className="text-center max-w-2xl mx-auto mb-3">
+          <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-gray-900 capitalize">
             {categoryTitle}
           </h1>
           <p className="text-xs text-gray-600 mt-1">
@@ -101,8 +100,8 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       </section>
 
       {/* Winni-Style Filter & Sort Bar */}
-      <section className="px-4 sm:px-6 max-w-7xl mx-auto w-full mb-6">
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
+      <section className="px-4 sm:px-6 max-w-7xl mx-auto w-full mb-5">
+        <div className="bg-white rounded-xl p-3.5 border border-gray-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-1.5 font-bold text-gray-900">
               <SlidersHorizontal className="w-4 h-4 text-[#C2185B]" />
@@ -111,7 +110,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
             <button
               onClick={() => setEgglessOnly(!egglessOnly)}
-              className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-1.5 font-semibold ${
+              className={`px-3 py-1 rounded-full border transition-all flex items-center gap-1.5 font-semibold ${
                 egglessOnly
                   ? "bg-green-50 text-green-700 border-green-300"
                   : "bg-gray-50 text-gray-700 border-gray-200"
@@ -121,7 +120,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
               {egglessOnly && <Check className="w-3.5 h-3.5" />}
             </button>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
               {[
                 { label: "All Prices", value: "all" },
                 { label: "Under ₹500", value: "under-500" },
@@ -131,7 +130,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 <button
                   key={chip.value}
                   onClick={() => setPriceRange(chip.value as any)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                  className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
                     priceRange === chip.value
                       ? "bg-[#C2185B] text-white border-[#C2185B]"
                       : "bg-gray-50 text-gray-700 border-gray-200"
@@ -171,19 +170,22 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {displayedProducts.map((product) => {
               const isWishlisted = wishlist.includes(product.id);
               const originalPrice = product.originalPrice || Math.round(product.price * 1.25);
               const discountPct = Math.round(((originalPrice - product.price) / originalPrice) * 100);
 
               return (
-                <Link
+                <div
                   key={product.id}
-                  href={`/product/${product.id}`}
-                  className="winni-card group flex flex-col overflow-hidden relative"
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    setIsDrawerOpen(true);
+                  }}
+                  className="winni-card group flex flex-col overflow-hidden relative cursor-pointer"
                 >
-                  <div className="w-full h-44 sm:h-52 bg-gray-50 relative overflow-hidden">
+                  <div className="w-full h-36 sm:h-44 bg-gray-50 relative overflow-hidden">
                     {product.images && product.images.length > 0 ? (
                       <img
                         src={product.images[0]}
@@ -210,14 +212,14 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                     )}
                   </div>
 
-                  <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between space-y-2">
+                  <div className="p-3 flex flex-col flex-1 justify-between space-y-2">
                     <div>
                       <h3 className="font-heading font-bold text-xs sm:text-sm text-gray-900 group-hover:text-[#C2185B] line-clamp-1 transition-colors">
                         {product.name}
                       </h3>
 
                       <div className="flex items-baseline gap-1.5 mt-1">
-                        <span className="font-bold text-sm sm:text-base text-gray-900">
+                        <span className="font-bold text-sm text-gray-900">
                           {settings.currency}{product.price}
                         </span>
                         <span className="text-[11px] text-gray-400 line-through">
@@ -230,25 +232,19 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                     </div>
 
                     <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-[10px]">
-                      <div className="rating-badge">
-                        <span>4.5</span>
-                        <Star className="w-2.5 h-2.5 fill-white text-white" />
-                      </div>
-
                       <span className="text-gray-500 font-medium">
                         Earliest: <strong className="text-gray-800">Today</strong>
                       </span>
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
         )}
       </main>
 
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      <AdminPinModal isOpen={isAdminPinModalOpen} onClose={() => setIsAdminPinModalOpen(false)} />
+      <CakeDrawer product={selectedProduct} isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </div>
   );
 }

@@ -25,10 +25,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-[#FFF9F4] text-[#2C1A10] flex flex-col font-body">
-      <Navbar
-        onOpenAdminPinModal={() => setIsAdminPinModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      <Navbar />
 
       <section className="py-16 px-6 max-w-7xl mx-auto w-full">
         <div className="text-center max-w-2xl mx-auto mb-12">

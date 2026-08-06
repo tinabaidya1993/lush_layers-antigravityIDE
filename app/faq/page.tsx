@@ -42,10 +42,7 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen bg-[#FFF9F4] text-[#2C1A10] flex flex-col font-body">
-      <Navbar
-        onOpenAdminPinModal={() => setIsAdminPinModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      <Navbar />
 
       <main className="max-w-4xl mx-auto px-6 py-12 w-full flex-1">
         <div className="text-center mb-12">

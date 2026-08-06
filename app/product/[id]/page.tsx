@@ -4,30 +4,19 @@ import React, { useState, use } from "react";
 import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
 import { Navbar } from "@/components/Navbar";
-import { AdminPinModal } from "@/components/AdminPinModal";
-import { CakeDrawer } from "@/components/CakeDrawer";
-import { CartDrawer } from "@/components/CartDrawer";
 import {
   ArrowLeft,
   Cake,
-  Sparkles,
-  Star,
   MessageCircle,
   Truck,
-  ShieldCheck,
   Check,
-  Heart,
   Gift,
   Flame,
-  Plus,
 } from "lucide-react";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const { products, addons, settings } = useStore();
-
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isAdminPinModalOpen, setIsAdminPinModalOpen] = useState(false);
 
   const product = products.find(
     (p) => p.id === resolvedParams.id || p.slug === resolvedParams.id
@@ -104,10 +93,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   };
 
-  const relatedCakes = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
-
   const handleWhatsAppOrder = () => {
     const text = `Hi ${settings.storeName}! I want to order *${product.name}*:\n` +
       `• Selected Size: ${selectedWeight}\n` +
@@ -124,10 +109,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#212121] flex flex-col font-body">
-      <Navbar
-        onOpenAdminPinModal={() => setIsAdminPinModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full flex-1">
         <div className="mb-6 flex items-center justify-between">
@@ -184,14 +166,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-gray-900 mt-1">
                 {product.name}
               </h1>
-
-              <div className="flex items-center gap-2 mt-2 text-xs">
-                <div className="rating-badge">
-                  <span>4.9</span>
-                  <Star className="w-2.5 h-2.5 fill-white text-white" />
-                </div>
-                <span className="text-gray-500 font-semibold">• 28 Verified Reviews</span>
-              </div>
             </div>
 
             {/* Calculated Price */}
@@ -359,9 +333,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
       </main>
-
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      <AdminPinModal isOpen={isAdminPinModalOpen} onClose={() => setIsAdminPinModalOpen(false)} />
     </div>
   );
 }

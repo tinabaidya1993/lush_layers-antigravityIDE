@@ -32,10 +32,7 @@ export default function MenuPage() {
 
   return (
     <div className="min-h-screen bg-[#FFF9F4] text-[#2C1A10] flex flex-col font-body">
-      <Navbar
-        onOpenAdminPinModal={() => setIsAdminPinModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      <Navbar />
 
       {/* Header */}
       <section className="py-16 px-6 max-w-7xl mx-auto w-full text-center">
@@ -160,16 +157,6 @@ export default function MenuPage() {
         product={selectedProduct}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-      />
-
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-      />
-
-      <AdminPinModal
-        isOpen={isAdminPinModalOpen}
-        onClose={() => setIsAdminPinModalOpen(false)}
       />
     </div>
   );

@@ -32,10 +32,7 @@ export default function GalleryPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#212121] flex flex-col font-body">
-      <Navbar
-        onOpenAdminPinModal={() => setIsAdminPinModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      <Navbar />
 
       <section className="py-12 px-4 sm:px-6 max-w-7xl mx-auto w-full flex-1">
         <div className="text-center max-w-2xl mx-auto mb-10">

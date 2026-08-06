@@ -55,10 +55,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] text-[#212121] flex flex-col font-body">
-      <Navbar
-        onOpenAdminPinModal={() => setIsAdminPinModalOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      <Navbar />
 
       {/* 1. Hero Carousel Slider */}
       <HeroCarousel />
@@ -185,11 +182,6 @@ export default function HomePage() {
                             </div>
 
                             <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-[10px]">
-                              <div className="rating-badge">
-                                <span>4.5</span>
-                                <Star className="w-2.5 h-2.5 fill-white text-white" />
-                              </div>
-
                               <span className="text-gray-500 font-medium">
                                 Earliest: <strong className="text-gray-800">Today</strong>
                               </span>
@@ -259,17 +251,6 @@ export default function HomePage() {
             <div>WhatsApp: {settings.whatsappNumber}</div>
           </div>
 
-          <div className="space-y-3">
-            <span className="font-bold uppercase tracking-wider text-white block">Store Control</span>
-            <button
-              onClick={() => setIsAdminPinModalOpen(true)}
-              className="btn-secondary px-4 py-2 text-xs flex items-center gap-2 bg-gray-800 text-white border-gray-700 hover:bg-[#C2185B] hover:border-[#C2185B]"
-            >
-              <Lock className="w-3.5 h-3.5 text-[#C2185B]" />
-              <span>Admin Dashboard (PIN: 7890)</span>
-            </button>
-          </div>
-
         </div>
 
         <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-gray-800 text-center text-[11px] text-gray-500">
@@ -278,8 +259,6 @@ export default function HomePage() {
       </footer>
 
       <CakeDrawer product={selectedProduct} isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-      <AdminPinModal isOpen={isAdminPinModalOpen} onClose={() => setIsAdminPinModalOpen(false)} />
     </div>
   );
 }

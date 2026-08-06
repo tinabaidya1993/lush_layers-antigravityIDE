@@ -4,13 +4,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
-import { Lock, Sparkles, MessageCircle, Menu as MenuIcon, X, ShoppingBag, Search, MapPin } from "lucide-react";
+import { Sparkles, MessageCircle, Menu as MenuIcon, X, Search, MapPin } from "lucide-react";
 
-export const Navbar: React.FC<{
-  onOpenAdminPinModal: () => void;
-  onOpenCart?: () => void;
-  cartCount?: number;
-}> = ({ onOpenAdminPinModal, onOpenCart, cartCount = 0 }) => {
+export const Navbar: React.FC = () => {
   const { settings } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -30,7 +26,7 @@ export const Navbar: React.FC<{
       {/* Top Announcement Bar (Winni Magenta Style) */}
       <div className="bg-[#C2185B] text-white py-1.5 px-4 text-center text-xs font-semibold flex items-center justify-center gap-2">
         <Sparkles className="w-3.5 h-3.5" />
-        <span>{settings.announcementText || "🎉 Same Day Delivery Available across India | Order on WhatsApp"}</span>
+        <span>{settings.announcementText || "🎉 Same Day Delivery Available across India | Direct WhatsApp Ordering"}</span>
       </div>
 
       {/* Main Header Bar */}
@@ -69,29 +65,6 @@ export const Navbar: React.FC<{
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-3">
-            {/* Cart Trigger */}
-            <button
-              onClick={onOpenCart}
-              className="relative p-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-[#FCE4EC] hover:text-[#C2185B] transition-colors"
-              title="Cart"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#C2185B] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-
-            {/* Admin PIN Access */}
-            <button
-              onClick={onOpenAdminPinModal}
-              className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:text-[#C2185B] transition-colors"
-              title="Admin Panel"
-            >
-              <Lock className="w-4 h-4" />
-            </button>
-
             {/* WhatsApp CTA (Desktop) */}
             <a
               href={`https://wa.me/${settings.whatsappNumber.replace(/[^0-9]/g, "")}`}
