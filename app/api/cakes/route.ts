@@ -51,9 +51,9 @@ export async function GET(req: NextRequest) {
       images: c.images,
       flavors: c.flavorOptions,
       sizes: c.sizeVariants ? c.sizeVariants.map((v) => v.size) : ["1 Kg"],
-      isEggless: c.isEggless,
-      isAvailable: c.isAvailable,
-      isFeatured: c.isFeatured,
+      isEggless: c.isEggless !== false,
+      isAvailable: c.isAvailable !== false,
+      isFeatured: Boolean(c.isFeatured),
       createdAt: c.createdAt ? c.createdAt.toISOString() : new Date().toISOString(),
     }));
 

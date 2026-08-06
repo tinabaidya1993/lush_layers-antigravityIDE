@@ -26,7 +26,9 @@ export default function MenuPage() {
   const filteredProducts =
     selectedCategory === "All"
       ? products
-      : products.filter((p) => p.category === selectedCategory);
+      : products.filter(
+          (p) => p.category && p.category.trim().toLowerCase() === selectedCategory.toLowerCase()
+        );
 
   return (
     <div className="min-h-screen bg-[#FFF9F4] text-[#2C1A10] flex flex-col font-body">
