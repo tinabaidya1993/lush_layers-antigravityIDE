@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/mongodb";
 import { CakeModel } from "@/lib/models";
 
@@ -88,6 +89,9 @@ export async function POST(req: NextRequest) {
       isEggless: body.isEggless !== false,
       isFeatured: Boolean(body.isFeatured),
     });
+
+    revalidatePath("/");
+    revalidatePath("/menu");
 
     return NextResponse.json({
       id: newCake._id.toString(),

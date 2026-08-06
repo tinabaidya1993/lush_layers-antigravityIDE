@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "@/lib/mongodb";
 import { CakeModel } from "@/lib/models";
 
@@ -26,6 +27,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Cake not found" }, { status: 404 });
     }
 
+    revalidatePath("/");
+    revalidatePath("/menu");
+
     return NextResponse.json({ success: true, cake: updated });
   } catch (error: any) {
     console.error("PUT /api/cakes/[id] Error:", error);
@@ -42,6 +46,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     if (!deleted) {
       return NextResponse.json({ error: "Cake not found" }, { status: 404 });
     }
+
+    revalidatePath("/");
+    revalidatePath("/menu");
 
     return NextResponse.json({ success: true, id });
   } catch (error: any) {

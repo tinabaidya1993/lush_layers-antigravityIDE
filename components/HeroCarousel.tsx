@@ -45,8 +45,8 @@ export const HeroCarousel: React.FC = () => {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   return (
-    <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
-      <div className="relative w-full h-[320px] sm:h-[400px] md:h-[440px] rounded-2xl sm:rounded-3xl overflow-hidden bg-gray-900 border border-gray-200 shadow-md">
+    <section className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-3">
+      <div className="relative w-full h-[220px] sm:h-[280px] md:h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden bg-gray-900 border border-gray-200 shadow-sm">
         {heroSlides.map((slide, index) => {
           const isActive = index === currentSlide;
           const isExternal = slide.ctaLink?.startsWith("http");

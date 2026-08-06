@@ -100,14 +100,14 @@ export default function MenuPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
                 onClick={() => openProductDrawer(product)}
-                className="group cursor-pointer flex flex-col pb-6 border-b border-[#EADCD3]"
+                className="group cursor-pointer flex flex-col pb-4 border-b border-[#EADCD3] winni-card p-3 rounded-2xl bg-white shadow-xs hover:shadow-md transition-all"
               >
-                <div className="w-full h-72 rounded-2xl overflow-hidden bg-[#FAF2EC] border border-[#EADCD3] relative mb-4">
+                <div className="w-full h-36 sm:h-44 rounded-xl overflow-hidden bg-[#FAF2EC] border border-[#EADCD3] relative mb-2.5">
                   {product.images && product.images.length > 0 ? (
                     <img
                       src={product.images[0]}

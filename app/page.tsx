@@ -125,8 +125,8 @@ export default function HomePage() {
                     </Link>
                   </div>
 
-                  {/* Product Cards Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {/* Compact Winni-Style Product Cards Grid (5-6 columns on desktop) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
                     {visibleCakes.map((product) => {
                       const isWishlisted = wishlist.includes(product.id);
                       const originalPrice = product.originalPrice || Math.round(product.price * 1.25);
@@ -138,7 +138,7 @@ export default function HomePage() {
                           href={`/product/${product.id}`}
                           className="winni-card group flex flex-col overflow-hidden relative"
                         >
-                          <div className="w-full h-44 sm:h-52 bg-gray-50 relative overflow-hidden">
+                          <div className="w-full h-36 sm:h-44 bg-gray-50 relative overflow-hidden">
                             {product.images && product.images.length > 0 ? (
                               <img
                                 src={product.images[0]}
